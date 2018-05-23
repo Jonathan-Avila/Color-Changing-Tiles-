@@ -1,0 +1,66 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package tiles;
+
+/**
+ *
+ * @author jonat
+ */
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.util.Random;
+
+/**
+ *
+ * @author jonat
+ */
+public class TILES {
+    
+
+    /**
+     * @param args the command line arguments
+     */
+    static JButton[] buttons = new JButton[8];
+    public static void main(String[] args) {
+        JFrame jf = new JFrame("HW1");
+        jf.setSize(400,400);
+        jf.setResizable(true);
+        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jf.setVisible(true);
+        JPanel jp = new JPanel();
+        jf.add(jp);
+        jp.setLayout(new BorderLayout(200,200));
+        Random a = new Random();
+        for(int i = 0; i < 8; i++){
+            buttons[i] = new JButton("I Hope This Does Something" );
+            buttons[i].setBackground(new Color(a.nextInt(255),a.nextInt(255),a.nextInt(255)));
+            buttons[i].addActionListener(new ButtonPress());
+            jp.add(buttons[i]);
+        }
+        jf.add(jp);
+        
+    }   
+}
+
+class MyPanel extends JPanel{
+    MyPanel(Color c){
+        setBackground(c);
+    }
+}
+
+class ButtonPress implements ActionListener{
+    int i;
+    ButtonPress(){i=0;}
+    @Override
+    public void actionPerformed(ActionEvent ae){
+        JButton jb = (JButton) ae.getSource();
+        i++;
+        jb.setText("<HTML><H1>You pressed me "+i+" times!</H1></HTML>");
+    }
+}
+
+
