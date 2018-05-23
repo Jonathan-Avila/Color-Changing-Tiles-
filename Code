@@ -1,66 +1,108 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tiles;
-
-/**
- *
- * @author jonat
- */
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.util.Random;
+import static java.lang.Thread.sleep;
 
 /**
  *
  * @author jonat
  */
 public class TILES {
-    
 
     /**
      * @param args the command line arguments
      */
-    static JButton[] buttons = new JButton[8];
+    static int numOfTiles = 8;
+    static JFrame myFrame = new JFrame("Jonathan's World");
+    
+    static int randomColor(){  
+   return (int)(Math.random() * 256);
+}   
+ 
     public static void main(String[] args) {
-        JFrame jf = new JFrame("HW1");
-        jf.setSize(400,400);
-        jf.setResizable(true);
-        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jf.setVisible(true);
-        JPanel jp = new JPanel();
-        jf.add(jp);
-        jp.setLayout(new BorderLayout(200,200));
-        Random a = new Random();
-        for(int i = 0; i < 8; i++){
-            buttons[i] = new JButton("I Hope This Does Something" );
-            buttons[i].setBackground(new Color(a.nextInt(255),a.nextInt(255),a.nextInt(255)));
-            buttons[i].addActionListener(new ButtonPress());
-            jp.add(buttons[i]);
-        }
-        jf.add(jp);
+          
+        myFrame.setSize(400,400);
+        myFrame.setResizable(true);
+        myFrame.setVisible(true);
+        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(4,2));
+        mainThread mainT = new mainThread();
+        for(int i = 0; i < numOfTiles; i++){
+            pressed aButton = new pressed("Button " + (i + 1));
+            aButton.addActionListener(new ButtonPress());
+            aButton.setBackground( new Color(randomColor(),randomColor(),randomColor()));
+            mainPanel.add(aButton);
+            mainT.addAnotherButton(aButton);
+      
+           }
         
-    }   
-}
-
-class MyPanel extends JPanel{
-    MyPanel(Color c){
-        setBackground(c);
-    }
-}
-
-class ButtonPress implements ActionListener{
-    int i;
-    ButtonPress(){i=0;}
-    @Override
+        myFrame.getContentPane().add(mainPanel);
+        
+        mainT.start();
+        
+         
+    }  
+     static class ButtonPress implements ActionListener{
+        @Override
     public void actionPerformed(ActionEvent ae){
-        JButton jb = (JButton) ae.getSource();
-        i++;
-        jb.setText("<HTML><H1>You pressed me "+i+" times!</H1></HTML>");
+       pressed button = (pressed) ae.getSource();
+        button.reverse();
+    } 
     }
+    
+   static class mainThread extends Thread{
+            
+         pressed[] buttons = new pressed[numOfTiles];
+         int i = 0;
+          public void addAnotherButton(pressed anotherButton){
+            buttons[i]=anotherButton;
+            i++;
+    }
+         
+        @Override
+        public void run(){
+        try{
+           
+                for(;;){
+            for (int i=0; i< numOfTiles; i++){
+                if(buttons[i].isItPressed() == true){
+                    continue;
+                }
+              buttons[i].setBackground(new Color(randomColor(),randomColor(),randomColor()));
+              sleep(1000);
+            
+        
+                }
+    
+        }
+        }
+          catch(InterruptedException exeption){}
+          }
+       } 
 }
 
-
+    class pressed extends JButton{
+       public pressed (String buttonName){
+          super(buttonName);
+       }
+        boolean pressed = false;
+        
+          
+        
+        boolean isItPressed(){
+            return pressed;
+        }
+        void reverse(){
+            
+            if(pressed){
+                pressed = false;
+            }
+            else{
+                pressed = true;
+        }
+            }
+            
+        }
+    
